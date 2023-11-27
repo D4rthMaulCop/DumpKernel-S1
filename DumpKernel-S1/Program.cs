@@ -72,7 +72,7 @@ class Program
         {
             if (args[0] == "--output" && args[1].StartsWith("C:\\"))
             {
-                DoLiveKernelDump("C:\\kernel.dmp");
+                DoLiveKernelDump(args[1]);
             }
             else
             {
